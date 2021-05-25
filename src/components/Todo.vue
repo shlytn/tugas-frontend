@@ -37,9 +37,7 @@
         axios.post('http://localhost:3000/todo', newTodo)
         .then(result => {
           console.log(result)
-          // this.todos = result.data
           this.todos.push({ deskripsi: result.data.deskripsi })
-          console.log("post...")
         })
         this.myText = ""
       },
@@ -51,8 +49,8 @@
         this.todos.splice(idx, 1)
         console.log(idx)
       },
-      refreshList: async function(){
-        await axios.get('http://localhost:3000/todo')
+      refreshList: function(){
+        axios.get('http://localhost:3000/todo')
         .then(result => {
           this.todos = result.data
         })
