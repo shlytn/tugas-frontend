@@ -1,9 +1,14 @@
 <template>
-  <Todo />
+  <!-- <Todo />
+  <router-link>Auth</router-link>
+  <router-link></router-link> -->
+  <router-view />
 </template>
 
 <script setup>
 import Todo from './components/Todo.vue'
+import User from './components/User'
+import Auth from './components/Auth'
 import axios from 'axios'
 
 // This starter template is using Vue 3 experimental <script setup> SFCs
