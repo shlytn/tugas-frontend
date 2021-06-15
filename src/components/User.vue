@@ -45,7 +45,7 @@
       },
       del: function(id){
         axios.delete(`http://localhost:3000/user/${id}`, headers)
-        .then(result => {
+        .then(() => {
           let idx = this.users.findIndex(i => i._id === id)
           this.users.splice(idx, 1)
         })

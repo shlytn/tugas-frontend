@@ -15,6 +15,10 @@
 <script>
   import axios from 'axios'
 
+  const username = localStorage.getItem('usr')
+  const password = localStorage.getItem('pwd')
+  const headers = { headers: { username, password } }
+
   export default{
     data: function() {
       return{
@@ -23,36 +27,29 @@
       }
     },
     created: function(){
-      axios.get('http://localhost:3000/todo')
+      axios.get('http://localhost:3000/todo', headers)
       .then(result => {
         this.todos = result.data
-        // alert(JSON.stringify(result.data))
         console.log("rendering")
       })
     },
     methods: {
       add: function(){
-        this.refreshList()
         let newTodo = { deskripsi: this.myText }
-        axios.post('http://localhost:3000/todo', newTodo)
+        axios.post('http://localhost:3000/todo', newTodo, headers)
         .then(result => {
           console.log(result)
-          this.todos.push({ deskripsi: result.data.deskripsi })
+          this.todos.push({ _id: result.data._id, deskripsi: result.data.deskripsi })
         })
         this.myText = ""
       },
       del: function(id){
         console.log(id)
-        axios.delete(`http://localhost:3000/todo/${id}`)
-        // this.todos = this.todos.filter(todo => todo._id !== id)
-        let idx = this.todos.findIndex(i => i._id === id)
-        this.todos.splice(idx, 1)
-        console.log(idx)
-      },
-      refreshList: function(){
-        axios.get('http://localhost:3000/todo')
-        .then(result => {
-          this.todos = result.data
+        axios.delete(`http://localhost:3000/todo/${id}`, headers)
+        .then(() => {
+          let idx = this.todos.findIndex(i => i._id === id)
+          this.todos.splice(idx, 1)
+          console.log(idx)
         })
       }
     }
