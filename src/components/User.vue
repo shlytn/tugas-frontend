@@ -7,7 +7,7 @@
     <ul>
       <li v-for="(item) in users" v-bind:key="item._id">
         {{ item.username }} 
-        <button @click="del(item._id)">X</button>  
+        <button @click="del(item._id)" :disabled="isDisable">X</button>  
       </li>
     </ul>
   </div>
@@ -49,6 +49,13 @@
           let idx = this.users.findIndex(i => i._id === id)
           this.users.splice(idx, 1)
         })
+      }
+    },
+    computed: {
+      isDisable: function(){
+        console.log(this.users.length)
+        if (this.users.length == 1) return true
+        else return false
       }
     }
   }
