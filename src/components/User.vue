@@ -14,6 +14,7 @@
 </template>
 <script>
   import axios from 'axios'
+  import io from 'socket.io-client'
 
   const username = localStorage.getItem('usr')
   const password = localStorage.getItem('pwd')
@@ -24,7 +25,8 @@
       return{
         users: [],
         username: '',
-        password: ''
+        password: '',
+        socket: io('http://localhost:3000')
       }
     },
     created: function(){
@@ -33,6 +35,13 @@
         this.users = result.data
         console.log("rendering")
       })
+      this.socket.on('get-data', user => {
+        this.users.push(user)
+      })
+      this.socket.on('data-deleted', id => {
+        let idx = this.users.findIndex(i => i._id === id)
+        this.users.splice(idx, 1)
+      })
     },
     methods: {
       add: function(){
@@ -40,7 +49,14 @@
         axios.post('http://localhost:3000/user', newUser, headers)
         .then(result => {
           console.log(result)
-          this.users.push({ _id: result.data._id, username: result.data.username })
+          let user = { _id: result.data._id, username: result.data.username }
+          this.users.push(user)
+          this.socket.emit('send-data', user)
+          this.username = ""
+          this.password = ""
+        })
+        .catch(err => {
+          alert(err + "\nUsername already Exist, get another username!!!")
         })
       },
       del: function(id){
@@ -48,6 +64,7 @@
         .then(() => {
           let idx = this.users.findIndex(i => i._id === id)
           this.users.splice(idx, 1)
+          this.socket.emit('delete-data', id)
         })
       }
     },

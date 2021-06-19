@@ -14,6 +14,7 @@
 
 <script>
   import axios from 'axios'
+  import io from 'socket.io-client'
 
   const username = localStorage.getItem('usr')
   const password = localStorage.getItem('pwd')
@@ -23,7 +24,8 @@
     data: function() {
       return{
         todos: [],
-        myText: ''
+        myText: '',
+        socket: io('http://localhost:3000')
       }
     },
     created: function(){
@@ -32,6 +34,13 @@
         this.todos = result.data
         console.log("rendering")
       })
+      this.socket.on('get-data', todo => {
+        this.todos.push(todo)
+      })
+      this.socket.on('data-deleted', id => {
+        let idx = this.todos.findIndex(i => i._id === id)
+          this.todos.splice(idx, 1)
+      })
     },
     methods: {
       add: function(){
@@ -39,7 +48,9 @@
         axios.post('http://localhost:3000/todo', newTodo, headers)
         .then(result => {
           console.log(result)
-          this.todos.push({ _id: result.data._id, deskripsi: result.data.deskripsi })
+          let todo = { _id: result.data._id, deskripsi: result.data.deskripsi }
+          this.todos.push(todo)
+          this.socket.emit('send-data', todo)
         })
         this.myText = ""
       },
@@ -49,6 +60,7 @@
         .then(() => {
           let idx = this.todos.findIndex(i => i._id === id)
           this.todos.splice(idx, 1)
+          this.socket.emit('delete-data', id)
           console.log(idx)
         })
       }
