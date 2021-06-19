@@ -33,13 +33,14 @@
       .then(result => {
         this.todos = result.data
         console.log("rendering")
-      })
-      this.socket.on('get-data', todo => {
-        this.todos.push(todo)
-      })
-      this.socket.on('data-deleted', id => {
-        let idx = this.todos.findIndex(i => i._id === id)
-          this.todos.splice(idx, 1)
+        
+        this.socket.on('get-data', todo => {
+          this.todos.push(todo)
+        })
+        this.socket.on('data-deleted', id => {
+          let idx = this.todos.findIndex(i => i._id === id)
+            this.todos.splice(idx, 1)
+        })
       })
     },
     methods: {

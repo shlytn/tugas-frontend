@@ -34,13 +34,13 @@
       .then(result => {
         this.users = result.data
         console.log("rendering")
-      })
-      this.socket.on('get-data', user => {
-        this.users.push(user)
-      })
-      this.socket.on('data-deleted', id => {
-        let idx = this.users.findIndex(i => i._id === id)
-        this.users.splice(idx, 1)
+        this.socket.on('get-data', user => {
+          this.users.push(user)
+        })
+        this.socket.on('data-deleted', id => {
+          let idx = this.users.findIndex(i => i._id === id)
+          this.users.splice(idx, 1)
+        })
       })
     },
     methods: {
